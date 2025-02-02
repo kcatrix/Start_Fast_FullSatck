@@ -1,0 +1,46 @@
+services:
+  web:
+    build: frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - ./frontend/node_modules:/app/node_modules
+    environment:
+      NODE_ENV: development
+    stdin_open: true
+    tty: true
+    command: npm start
+    depends_on:
+      - backend
+
+  backend:
+    build: backend
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend:/app
+      - ./backend/node_modules:/app/node_modules
+    environment:
+      NODE_ENV: development
+      POSTGRES_HOST: db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: whaterdb
+    depends_on:
+      - db
+    command: node server.js
+
+  db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: whaterdb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
