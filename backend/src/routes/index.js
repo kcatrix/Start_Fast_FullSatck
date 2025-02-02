@@ -3,11 +3,22 @@ const router = express.Router();
 const { createExample, listExamples } = require('../models');
 
 // Route de test
-router.get('/test', (req, res) => {
-  res.json({ 
-    message: 'Hello from backend!',
-    timestamp: new Date().toISOString()
-  });
+router.get('/test', async (req, res) => {
+  try {
+    const { pool } = require('../config/database');
+    const result = await pool.query('SELECT NOW()');
+    res.json({ 
+      success: true,
+      message: 'Connexion à la base de données réussie !',
+      timestamp: result.rows[0].now
+    });
+  } catch (err) {
+    res.json({ 
+      success: false,
+      message: 'Erreur de connexion à la base de données',
+      error: err.message
+    });
+  }
 });
 
 // Route pour tester la base de données

@@ -10,8 +10,21 @@ function App() {
 
   useEffect(() => {
     // Charger les exemples au démarrage
+    test_backend();
     fetchExamples();
   }, []);
+
+  const test_backend = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/test');
+      const data = await response.json();
+      console.log(data);
+      setBackendMessage(data.message); // Ajout de cette ligne pour afficher le message
+    } catch (err) {
+      console.error(err);
+      setBackendMessage('Erreur de connexion au backend');
+    }
+  };
 
   const fetchExamples = async () => {
     try {
@@ -50,9 +63,23 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <div style={{ marginTop: '20px', width: '100%', maxWidth: '600px' }}>
-          <h2>Test de la Base de Données</h2>
-          
+        <div style={{ 
+          marginTop: '20px', 
+          width: '100%', 
+          maxWidth: '600px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center'
+        }}>
+          <h2 style={{ marginBottom: '5px' }}>Test de la Base de Données</h2>
+          <p style={{ 
+            color: '#2ecc71',
+            fontWeight: 'bold',
+            margin: '0',
+            textAlign: 'center'
+          }}>
+            {backendMessage}
+          </p>
           {error && (
             <p style={{ color: 'red' }}>{error}</p>
           )}
